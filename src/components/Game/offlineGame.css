@@ -1,0 +1,97 @@
+body {
+    font: 14px "Century Gothic", Futura, sans-serif;
+    margin: 20px;
+  }
+  
+  .game{
+    margin-top:2%;
+  
+    background-color: #f1f1f1;
+      padding: 50px;
+      max-width: 1000px;
+      /* background-color: grey; */
+      box-shadow: 0 2px 0 rgba(90,97,105,.11), 0 4px 8px rgba(90,97,105,.12), 0 10px 10px rgba(90,97,105,.06), 0 7px 70px rgba(90,97,105,.1);
+  }
+  
+  .board-row:after {
+    clear: both;
+    content: "";
+    display: table;
+  }
+  
+  .status {
+    margin-bottom: 10px;
+  }
+  
+  .square {
+    background: #fff;
+    border: 1px solid #999;
+    float: left;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 34px;
+    height: 34px;
+    margin-right: -1px;
+    margin-top: -1px;
+    padding: 0;
+    text-align: center;
+    width: 34px;
+  }
+  
+  .square:focus {
+    outline: none;
+  }
+  
+  .kbd-navigation .square:focus {
+    background: #ddd;
+  }
+  
+  .game {
+    display: flex;
+    flex-direction: row;
+    margin: 5% auto 0 auto;
+  }
+  
+  .game-board {
+    margin-left: 20%;
+  }
+  
+  .game-info {
+    margin-left: 30px;
+    margin-top:48px;
+    max-height:450px;
+    overflow:auto;
+    font-weight:bold;
+  }
+  
+  .winningSquare {
+    background-color:rgb(181, 231, 181);
+  }
+  
+  
+  ol{
+    list-style:none;
+    padding-left:0px;
+  }
+  
+  ol li{
+    margin-bottom:4px;
+  }
+  li:first-child { 
+    margin-bottom:15px;
+  }
+  
+  /* 
+  .square {
+    border:none;
+    color:grey;
+  }
+  
+  ol li {
+    display: none;
+  } */
+  
+  .title {
+    text-align:center;
+    margin-bottom:20px;
+  }

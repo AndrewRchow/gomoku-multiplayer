@@ -17,80 +17,20 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
 
-    this.auth = firebase.auth();
-
-    // this.auth = app.auth();
+    this.auth = app.auth();
     this.db = app.database();
     this.storage = app.storage();
   }
 
-  provider = new firebase.auth.GoogleAuthProvider();
+  
+  //Database
+  rooms = () => this.db.ref(`gomoku/rooms`);
+  openRoom = () => this.db.ref(`gomoku/openRoom`);
 
-  googleLogin = () => {
-    firebase.auth().signInWithPopup(this.provider).then(function(result) {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential.accessToken;
-      // The signed-in user info.
-      var user = result.user;
-      // ...
-      console.log(token, user);
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-    });
-  }
-
-  logout = () => {
-    firebase.auth().signOut().then(function() {
-      // Sign-out successful.
-    }).catch(function(error) {
-      // An error happened.
-    });
-  }
-
-  // googleLoginPopup = firebase.auth().signInWithPopup(this.provider).then(function(result) {
-  //   // This gives you a Google Access Token. You can use it to access the Google API.
-  //   var token = result.credential.accessToken;
-  //   // The signed-in user info.
-  //   var user = result.user;
-  //   // ...
-  //   console.log(token, user);
-  //   firebase.auth().signInWithRedirect(this.provider);
-
-  // }).catch(function(error) {
-  //   // Handle Errors here.
-  //   var errorCode = error.code;
-  //   var errorMessage = error.message;
-  //   // The email of the user's account used.
-  //   var email = error.email;
-  //   // The firebase.auth.AuthCredential type that was used.
-  //   var credential = error.credential;
-  //   // ...
-  // });
-
-  // *** Auth API ***
-
-  // doCreateUserWithEmailAndPassword = (email, password) =>
-  //   this.auth.createUserWithEmailAndPassword(email, password);
-
-  // doSignInWithEmailAndPassword = (email, password) =>
-  //   this.auth.signInWithEmailAndPassword(email, password);
-
-  // doSignOut = () => {
-  //   this.auth.signOut();
-  // }
+  room = id => this.db.ref(`gomoku/rooms/${id}`);
 
 
-  // doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
 
-  // doPasswordUpdate = password =>
-  //   this.auth.currentUser.updatePassword(password);
 
   // *** User API ***
   //Database
