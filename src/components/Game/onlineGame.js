@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './onlineGame.css';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import { withFirebase } from '../Firebase';
+import { ClipLoader } from 'react-spinners';
+import { css } from '@emotion/core';
 
 class Square extends React.Component {
   render() {
@@ -34,7 +37,7 @@ class Board extends React.Component {
     var boardSquaresRow = [];
     for (var i = 0; i < 225; i++) {
       if (i % 15 == 0 && i != 0) {
-        boardSquares.push(<div className="board-row">{boardSquaresRow}</div>);
+        boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
         boardSquaresRow = [];
       }
       boardSquaresRow.push(this.renderSquare(i));
@@ -50,111 +53,143 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      history: [{
-        squares: Array(225).fill(null)
-      }],
-      stepNumber: 0,
+      squares: Array(225).fill(''),
       xIsNext: true,
-      isDraw: false
+      roomId: this.props.roomId,
+      player: this.props.player,
+      playerDisconnect:false
+
     }
   }
 
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1)
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
+  componentDidMount() {
+    console.log('bear');
 
-    if (calculateWinner(squares) || squares[i]) {
+    window.addEventListener('beforeunload', this.playerDisconnect);
+
+    this.props.firebase.room(this.state.roomId).on('value', snapshot => {
+      let squares = [];
+      Object.keys(snapshot.val().gameState.squares).forEach((key) => {
+        squares.push(snapshot.val().gameState.squares[key]);
+      });
+
+      this.setState({
+        squares,
+        xIsNext: snapshot.val().gameState.xIsNext,
+        playerDisconnect: snapshot.val().playerDisconnect
+      })
+    })
+  }
+
+  componentWillUnmount() {
+    this.props.firebase.room().off();
+  }
+
+  playerDisconnect = () => {
+    this.props.firebase.room(this.state.roomId)
+      .update({
+        playerDisconnect: true
+      });
+
+    this.props.firebase.openRoom()
+      .update({
+        isOpen: false 
+      });
+}
+  handleClick(i, myTurn) {
+    if (!myTurn)
       return;
-    }
+
+    const squares = this.state.squares;
+
+    if (calculateWinner(squares) || squares[i])
+      return;
+
     squares[i] = this.state.xIsNext ? 'X' : 'O';
 
-    this.setState({
-      history: history.concat([{
+    this.props.firebase.gameState(this.state.roomId)
+      .update({
         squares: squares,
-      }]),
-      stepNumber: history.length,
-      xIsNext: !this.state.xIsNext,
-      isDraw: history.length === 225 ? true : false
-    });
-  }
-
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
-      isDraw: false
-    })
+        xIsNext: !this.state.xIsNext
+      });
   }
 
   render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
-    const isDraw = this.state.isDraw;
+    const { squares, xIsNext, player, playerDisconnect } = this.state;
+    const winner = calculateWinner(squares);
 
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        'Move ' + move :
-        // 'Go to move #' + move :
-        'Restart';
-      // 'Go to game start';
+    const override = css`
+    display: inline-block;`;
 
-      if(move){
-        return (
-          <li key={move}>
-            <button className="btn btn-info" onClick={() => this.jumpTo(move)}>{desc}</button>
-          </li>
-        )
-      }else {
-        return (
-          <li key={move}>
-            <button className="btn btn-primary" onClick={() => this.jumpTo(move)}>{desc}</button>
-          </li>
-        )
-      }
-
-      // return (
-      //   <li key={move}>
-      //   <button onClick={() => this.jumpTo(move)}>{desc}</button>
-      // </li>
-      // )
-
-    })
-
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner.player;
-    } else if (isDraw) {
-      status = 'Draw';
+    let status = '';
+    let myTurn = false;
+    if (xIsNext && player == 'playerX') {
+      myTurn = true;
+      status = 'Your turn (X)';
+    } else if (!xIsNext && player == 'playerO') {
+      myTurn = true;
+      status = 'Your turn (O)';
+    } else if (xIsNext && player == 'playerO') {
+      myTurn = false;
+      status = 'Other turn (X)';
+    } else if (!xIsNext && player == 'playerX') {
+      myTurn = false;
+      status = 'Other turn (O)';
     }
-    else {
-      status = 'Next: ' + (this.state.xIsNext ? 'X' : 'O');
-      // status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+
+    if (winner && !myTurn) {
+      status = 'You Win';
+    } else if (winner && myTurn) {
+      status = 'You Lose';
+    }
+
+    if(playerDisconnect) {
+      status = 'Opponent disconnected'
     }
 
     return (
       <div className="game">
         <div className="game-board">
-          <h3 className="title">Title</h3>
-          {/* <Board
-            squares={current.squares}
-            onClick={(i) => this.handleClick(i)}
-            winSeq={winner.sequence} /> */}
+          <h3 className="title">test</h3>
+
+          {!winner
+            ?
+            <div className={(myTurn ? 'myTurn' : 'opponentTurn')}>
+              {status}
+              <div className='sweet-loading'>
+                <ClipLoader
+                  sizeUnit={"px"}
+                  css={override}
+                  size={30}
+                  color={'#61aceb'}
+                  loading={!myTurn}
+                />
+              </div>
+            </div>
+            :
+            <div className={(myTurn ? 'winner' : 'loser')}>
+              {status}
+            </div>
+          }
+
+          <Board
+            squares={squares}
+            onClick={(i) => this.handleClick(i, myTurn)}
+            winSeq={winner.sequence} />
         </div>
-        <div className="game-info">
+        {/* <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
-        </div>
-      </div>
+        </div> */}
+      </div >
     );
   }
 }
 
 
 
-export default Game
+export default withFirebase(Game)
 
 // ========================================
 
@@ -187,53 +222,53 @@ function calculateWinner(squares) {
 }
 
 function findFiveInARow(matrix, row, column) {
-  var mLength = matrix.length+1;
+  var mLength = matrix.length + 1;
   var selected = matrix[row][column];
   var sequence = [];
   var win;
-//Horizontal right
+  //Horizontal right
   for (var i = 0; i < 5; i++) {
-    if (0>column-4 || selected != matrix[row][column-i]) {
+    if (0 > column - 4 || selected != matrix[row][column - i]) {
       sequence = [];
       win = false;
       break;
     }
-    sequence.push((row*mLength) + (column-i));
+    sequence.push((row * mLength) + (column - i));
     win = true;
   }
-//Vertical 
+  //Vertical 
   if (!win) {
     for (var i = 0; i < 5; i++) {
-      if (0 > row-4 || selected != matrix[row-i][column]) {
+      if (0 > row - 4 || selected != matrix[row - i][column]) {
         sequence = [];
         win = false;
         break;
       }
-      sequence.push(((row-i)*mLength) + (column));
+      sequence.push(((row - i) * mLength) + (column));
       win = true;
     }
   }
-//Diagonal Q13
+  //Diagonal Q13
   if (!win) {
     for (var i = 0; i < 5; i++) {
-      if (0 > column-4 || matrix.length<row+4 || selected != matrix[row+i][column-i]) {
+      if (0 > column - 4 || matrix.length < row + 4 || selected != matrix[row + i][column - i]) {
         sequence = [];
         win = false;
         break;
       }
-      sequence.push(((row+i)*mLength) + (column-i));
+      sequence.push(((row + i) * mLength) + (column - i));
       win = true;
     }
   }
-//Diagonal Q24
+  //Diagonal Q24
   if (!win) {
     for (var i = 0; i < 5; i++) {
-      if (0 > column-4 || 0>row-4 || selected != matrix[row-i][column-i]) {
+      if (0 > column - 4 || 0 > row - 4 || selected != matrix[row - i][column - i]) {
         sequence = [];
         win = false;
         break;
       }
-      sequence.push(((row-i)*mLength) + (column-i));
+      sequence.push(((row - i) * mLength) + (column - i));
       win = true;
     }
   }
@@ -243,7 +278,7 @@ function findFiveInARow(matrix, row, column) {
     return {
       player: selected,
       sequence: sequence
-          };
+    };
   } else {
     return "";
   }

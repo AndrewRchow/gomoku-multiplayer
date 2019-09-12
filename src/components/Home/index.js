@@ -8,12 +8,8 @@ import Game from '../Game/offlineGame'
 import * as Routes from '../../constants/routes';
 
 const newGame = {
-    history: [{
-        squares: Array(225).fill(null)
-    }],
-    stepNumber: 0,
+    squares: Array(225).fill(''),
     xIsNext: true,
-    isDraw: false
 };
 
 class Home extends React.Component {
@@ -24,29 +20,32 @@ class Home extends React.Component {
             loading: false,
             error: '',
             roomId: '',
-            roomInfo: {}
+            roomInfo: {},
+            player: ''
         }
     }
 
-    // componentDidMount() {
-    // }
+    componentDidMount() {
+        console.log([{
+            squares: Array(225).fill(null)
+        }]);
+    }
+
+    componentWillUpdate() {
+        if (this.state.roomId) {
+            console.log('bleh');
+            this.props.history.push({
+                pathname: Routes.Multiplayer,
+                state: {
+                    roomId: this.state.roomId,
+                    player: this.state.player
+                }
+            });
+        }
+    }
 
     componentWillUnmount() {
         window.removeEventListener('beforeunload', this.test);
-    }
-
-    test = () => {
-        // this.props.firebase.room(this.state.roomId)
-        //   .update({
-        //     test: 'yeet'
-        //   })
-
-        // this.props.firebase.openRoom()
-        //   .update({
-        //     test: 'yeet'
-        //   })
-
-        this.props.firebase.room().off();
     }
 
     searchButton = () => {
@@ -64,10 +63,10 @@ class Home extends React.Component {
                             this.props.firebase.rooms()
                                 .push({
                                     gameState: newGame,
-                                    player1: true,
-                                    player2: false,
+                                    playerX: true,
+                                    playerO: false,
                                     completed: false,
-                                    test: ''
+                                    playerDisconnect:false
                                 })
                                 .then((snap) => {
                                     const newRoomId = snap.key;
@@ -78,7 +77,8 @@ class Home extends React.Component {
                                         }).then(() => {
                                             this.setState({
                                                 loading: false,
-                                                roomId: newRoomId
+                                                roomId: newRoomId,
+                                                player: 'playerX'
                                             }, () => {
                                                 this.props.firebase.room().off();
                                                 this.props.firebase.room(newRoomId).on('value', snapshot => {
@@ -86,14 +86,13 @@ class Home extends React.Component {
                                                         roomInfo: snapshot.val(),
                                                     })
                                                 })
-                                                window.addEventListener('beforeunload', this.test);
                                             });
                                         });
                                 })
                         } else if (isOpen) {
                             this.props.firebase.room(roomId)
                                 .update({
-                                    player2: true,
+                                    playerO: true,
                                 })
                                 .then(() => {
                                     this.props.firebase.openRoom()
@@ -102,7 +101,8 @@ class Home extends React.Component {
                                         }).then(() => {
                                             this.setState({
                                                 loading: false,
-                                                roomId: roomId
+                                                roomId: roomId,
+                                                player: 'playerO'
                                             }, () => {
                                                 this.props.firebase.room().off();
                                                 this.props.firebase.room(roomId).on('value', snapshot => {
@@ -110,7 +110,6 @@ class Home extends React.Component {
                                                         roomInfo: snapshot.val(),
                                                     })
                                                 })
-                                                window.addEventListener('beforeunload', this.test);
                                             });
                                         });
                                 });
@@ -141,21 +140,12 @@ class Home extends React.Component {
 
 
     render() {
-        const { roomInfo } = this.state;
+        const { roomInfo, roomId } = this.state;
         console.log('tsfest', roomInfo);
 
         const override = css`
             display: block;
             margin: 30px`;
-
-        if (roomInfo) {
-            console.log(roomInfo.test);
-        }
-        if (roomInfo.test == 'bleh') {
-            console.log('bleh');
-            this.props.history.push(Routes.Multiplayer);
-        }
-
 
         return (
             <div>

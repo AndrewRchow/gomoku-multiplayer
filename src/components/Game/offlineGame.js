@@ -34,10 +34,14 @@ class Board extends React.Component {
     var boardSquaresRow = [];
     for (var i = 0; i < 225; i++) {
       if (i % 15 == 0 && i != 0) {
-        boardSquares.push(<div className="board-row">{boardSquaresRow}</div>);
+        boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
         boardSquaresRow = [];
       }
       boardSquaresRow.push(this.renderSquare(i));
+
+      // if(i == 224){
+      //   boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
+      // }
     }
     return (
       <div>
@@ -170,13 +174,19 @@ function calculateWinner(squares) {
       squaresRow = [];
     }
     squaresRow.push(squares[i]);
+
+    // if(i == 224){
+    //   squaresArray.push(squaresRow);
+    // }
   }
+  console.log(squaresArray);
 
   for (var i = 0; i < squaresArray.length; i++) {
     for (var j = 0; j < squaresArray[i].length; j++) {
       if (squaresArray[i][j]) {
         winner = findFiveInARow(squaresArray, i, j);
         if (winner) {
+          console.log(winner);
           return winner;
         }
 
