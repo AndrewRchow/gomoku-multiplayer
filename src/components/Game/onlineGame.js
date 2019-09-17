@@ -5,6 +5,9 @@ import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import { withFirebase } from '../Firebase';
 import { ClipLoader } from 'react-spinners';
 import { css } from '@emotion/core';
+import * as Routes from '../../constants/routes';
+import { Link } from 'react-router-dom';
+
 
 class Square extends React.Component {
   render() {
@@ -59,7 +62,7 @@ class Game extends React.Component {
       xIsNext: true,
       roomId: this.props.roomId,
       player: this.props.player,
-      playerDisconnect:false
+      playerDisconnect: false
 
     }
   }
@@ -95,9 +98,9 @@ class Game extends React.Component {
 
     this.props.firebase.openRoom()
       .update({
-        isOpen: false 
+        isOpen: false
       });
-}
+  }
   handleClick(i, myTurn) {
     if (!myTurn)
       return;
@@ -145,7 +148,7 @@ class Game extends React.Component {
       status = 'You Lose';
     }
 
-    if(playerDisconnect) {
+    if (playerDisconnect) {
       status = 'Opponent disconnected'
     }
 
@@ -173,7 +176,18 @@ class Game extends React.Component {
               {status}
             </div>
           }
+          {playerDisconnect
+            ? <div>
+              <button className="btn btn-info returnButton">
+                <Link to={Routes.Home}>Return</Link>
+              </button>
+            </div>
+            : <div></div>
+          }
 
+          <div style={{ height: '400px' }}>
+            sdf
+          </div>
           <Board
             squares={squares}
             onClick={(i) => this.handleClick(i, myTurn)}

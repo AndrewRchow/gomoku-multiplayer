@@ -31,9 +31,11 @@ class Home extends React.Component {
         }]);
     }
 
-    componentWillUpdate() {
-        if (this.state.roomId) {
-            console.log('bleh');
+    componentDidUpdate() {
+        console.log('blrh', this.state.roomInfo);
+
+        if (this.state.roomInfo.playerO) {
+            console.log('blrh', this.state.roomInfo);
             this.props.history.push({
                 pathname: Routes.Multiplayer,
                 state: {
@@ -45,7 +47,8 @@ class Home extends React.Component {
     }
 
     componentWillUnmount() {
-        window.removeEventListener('beforeunload', this.test);
+        // window.removeEventListener('beforeunload', this.test);
+        this.props.firebase.room().off();
     }
 
     searchButton = () => {
@@ -76,7 +79,6 @@ class Home extends React.Component {
                                             isOpen: true
                                         }).then(() => {
                                             this.setState({
-                                                loading: false,
                                                 roomId: newRoomId,
                                                 player: 'playerX'
                                             }, () => {
@@ -100,7 +102,6 @@ class Home extends React.Component {
                                             isOpen: false
                                         }).then(() => {
                                             this.setState({
-                                                loading: false,
                                                 roomId: roomId,
                                                 player: 'playerO'
                                             }, () => {

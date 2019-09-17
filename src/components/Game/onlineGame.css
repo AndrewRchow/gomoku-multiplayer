@@ -111,3 +111,12 @@ body {
   .loser {
     background-color:#ff8080;
   }
+
+  .returnButton a{
+    color:white;
+  }
+  
+  .returnButton a:hover{
+    text-decoration: none;
+  }
+
