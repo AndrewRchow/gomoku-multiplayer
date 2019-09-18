@@ -12,13 +12,17 @@ import { Link } from 'react-router-dom';
 class Square extends React.Component {
   render() {
     let isWinningSquare = false;
+    let isLastClickedSquare = false;
     if (this.props.winSeq) {
       isWinningSquare = elementInArray(this.props.keyProp, this.props.winSeq);
+    }
+    if(this.props.lastClick == this.props.keyProp){
+      isLastClickedSquare = true;
     }
 
     return (
       <button
-        className={'square ' + (isWinningSquare ? 'winningSquare' : '')}
+        className={'square ' + (isWinningSquare ? 'winningSquare' : '') + (isLastClickedSquare ? 'lastClick' : '')}
         onClick={() => this.props.onClick()}>
         {this.props.value}
       </button>
@@ -30,6 +34,7 @@ class Board extends React.Component {
   renderSquare(i) {
     return <Square
       key={i} keyProp={i}
+      lastClick={this.props.lastClick}
       value={this.props.squares[i]}
       onClick={() => this.props.onClick(i)}
       winSeq={this.props.winSeq} />;
@@ -60,10 +65,12 @@ class Game extends React.Component {
     this.state = {
       squares: Array(225).fill(''),
       xIsNext: true,
+      lastClick:'',
       roomId: this.props.roomId,
       player: this.props.player,
-      playerDisconnect: false
-
+      playerDisconnect: false,
+      myName: '',
+      opponentName:''
     }
   }
 
@@ -81,7 +88,10 @@ class Game extends React.Component {
       this.setState({
         squares,
         xIsNext: snapshot.val().gameState.xIsNext,
-        playerDisconnect: snapshot.val().playerDisconnect
+        lastClick: snapshot.val().gameState.lastClick,
+        playerDisconnect: snapshot.val().playerDisconnect,
+        myName: this.state.player == 'playerX' ? snapshot.val().playerXName : snapshot.val().playerOName,
+        opponentName: this.state.player == 'playerX' ? snapshot.val().playerOName : snapshot.val().playerXName
       })
     })
   }
@@ -115,12 +125,13 @@ class Game extends React.Component {
     this.props.firebase.gameState(this.state.roomId)
       .update({
         squares: squares,
-        xIsNext: !this.state.xIsNext
+        xIsNext: !this.state.xIsNext,
+        lastClick: i
       });
   }
 
   render() {
-    const { squares, xIsNext, player, playerDisconnect } = this.state;
+    const { squares, xIsNext, lastClick, player, playerDisconnect, myName, opponentName } = this.state;
     const winner = calculateWinner(squares);
 
     const override = css`
@@ -156,6 +167,8 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <h3 className="title">test</h3>
+          <div>{myName}</div>
+          <div>{opponentName}</div>
 
           {!winner
             ?
@@ -190,6 +203,7 @@ class Game extends React.Component {
           </div>
           <Board
             squares={squares}
+            lastClick={lastClick}
             onClick={(i) => this.handleClick(i, myTurn)}
             winSeq={winner.sequence} />
         </div>

@@ -67,6 +67,11 @@ body {
   .winningSquare {
     background-color:rgb(181, 231, 181);
   }
+
+  .lastClick {
+    background-color:rgb(161, 190, 235);
+  }
+  
   
   
   ol{

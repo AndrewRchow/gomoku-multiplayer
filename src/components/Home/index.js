@@ -10,6 +10,7 @@ import * as Routes from '../../constants/routes';
 const newGame = {
     squares: Array(225).fill(''),
     xIsNext: true,
+    lastClick: 226
 };
 
 class Home extends React.Component {
@@ -21,7 +22,8 @@ class Home extends React.Component {
             error: '',
             roomId: '',
             roomInfo: {},
-            player: ''
+            player: '',
+            name: ''
         }
     }
 
@@ -68,8 +70,10 @@ class Home extends React.Component {
                                     gameState: newGame,
                                     playerX: true,
                                     playerO: false,
+                                    playerXName: this.state.name,
+                                    playerOName:'',
                                     completed: false,
-                                    playerDisconnect:false
+                                    playerDisconnect: false
                                 })
                                 .then((snap) => {
                                     const newRoomId = snap.key;
@@ -87,6 +91,7 @@ class Home extends React.Component {
                                                     this.setState({
                                                         roomInfo: snapshot.val(),
                                                     })
+                                                    window.addEventListener('beforeunload', this.playerDisconnect);
                                                 })
                                             });
                                         });
@@ -95,6 +100,7 @@ class Home extends React.Component {
                             this.props.firebase.room(roomId)
                                 .update({
                                     playerO: true,
+                                    playerOName: this.state.name,
                                 })
                                 .then(() => {
                                     this.props.firebase.openRoom()
@@ -137,11 +143,31 @@ class Home extends React.Component {
         })
     }
 
+    cancelSearchButton = () => {
+        if (this.state.player == 'playerX') {
+            this.playerDisconnect();
+        }
+        this.props.firebase.room().off();
+        this.setState({
+            loading: false
+        });
+    }
 
+    playerDisconnect = () => {
+        this.props.firebase.openRoom()
+            .update({
+                isOpen: false
+            })
+    }
+
+    handleChange = (event) => {
+        console.log('blesh',event);
+        this.setState({ [event.target.name]: event.target.value });
+    };
 
 
     render() {
-        const { roomInfo, roomId } = this.state;
+        const { loading, name, roomInfo, roomId } = this.state;
         console.log('tsfest', roomInfo);
 
         const override = css`
@@ -151,14 +177,23 @@ class Home extends React.Component {
         return (
             <div>
                 <div>
-                    <button className={'form-control'} onClick={this.searchButton}>Ssearch</button>
+                    <label>
+                        Name:
+                      <input type="text" value={name} name="name" onChange={this.handleChange} />
+                    </label>
+                    <button className={'form-control'} onClick={this.searchButton} disabled={loading || !name}>Search</button>
+                    {loading
+                        ? <button onClick={this.cancelSearchButton}>Cancel</button>
+                        : <div></div>
+                    }
+
                     <div className='sweet-loading'>
                         <ClipLoader
                             sizeUnit={"px"}
                             css={override}
                             size={30}
                             color={'#61aceb'}
-                            loading={this.state.loading}
+                            loading={loading}
                         />
                     </div>
                 </div>

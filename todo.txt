@@ -1,5 +1,4 @@
-- On search: loading, open room, watch room for playerO join, navigate to room on join
-    - On disconnect, close room
+
 
 -game in progress
     - On disconnect, show disconnect message
@@ -8,8 +7,6 @@
     - Show button to go back
 
 -extra
-    -Highlight recent click
-        - Get i, store as value
     - Name input next tosearch
 
 -Colors
