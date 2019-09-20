@@ -25,7 +25,7 @@ body {
   
   .square {
     background: #fff;
-    border: 1px solid #999;
+    border: 1px solid #777;
     float: left;
     font-size: 24px;
     font-weight: bold;
@@ -39,6 +39,25 @@ body {
   }
   
   .square:focus {
+    outline: none;
+  }
+
+  .disabledSquare {
+    background: #fff;
+    border: 1px solid #ccc;
+    float: left;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 34px;
+    height: 34px;
+    margin-right: -1px;
+    margin-top: -1px;
+    padding: 0;
+    text-align: center;
+    width: 34px;
+  }
+  
+  .disabledSquare:focus {
     outline: none;
   }
   
@@ -107,6 +126,11 @@ body {
 
   .opponentTurn {
     background-color:#e0e0eb;
+  }
+
+  .currentTurnBorder{
+    border: 1px solid #aaa;
+    border-radius:4px;
   }
 
   .winner {

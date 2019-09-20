@@ -7,6 +7,7 @@ import { ClipLoader } from 'react-spinners';
 import { css } from '@emotion/core';
 import * as Routes from '../../constants/routes';
 import { Link } from 'react-router-dom';
+// import classes from './onlineGame.module.css';
 
 
 class Square extends React.Component {
@@ -16,13 +17,13 @@ class Square extends React.Component {
     if (this.props.winSeq) {
       isWinningSquare = elementInArray(this.props.keyProp, this.props.winSeq);
     }
-    if(this.props.lastClick == this.props.keyProp){
+    if (this.props.lastClick == this.props.keyProp) {
       isLastClickedSquare = true;
     }
 
     return (
       <button
-        className={'square ' + (isWinningSquare ? 'winningSquare' : '') + (isLastClickedSquare ? 'lastClick' : '')}
+        className={(this.props.myTurn ? 'square ' : 'disabledSquare ') + (isWinningSquare ? 'winningSquare ' : '') + (isLastClickedSquare ? 'lastClick' : '')}
         onClick={() => this.props.onClick()}>
         {this.props.value}
       </button>
@@ -35,6 +36,7 @@ class Board extends React.Component {
     return <Square
       key={i} keyProp={i}
       lastClick={this.props.lastClick}
+      myTurn={this.props.myTurn}
       value={this.props.squares[i]}
       onClick={() => this.props.onClick(i)}
       winSeq={this.props.winSeq} />;
@@ -65,18 +67,16 @@ class Game extends React.Component {
     this.state = {
       squares: Array(225).fill(''),
       xIsNext: true,
-      lastClick:'',
+      lastClick: '',
       roomId: this.props.roomId,
       player: this.props.player,
       playerDisconnect: false,
       myName: '',
-      opponentName:''
+      opponentName: ''
     }
   }
 
   componentDidMount() {
-    console.log('bear');
-
     window.addEventListener('beforeunload', this.playerDisconnect);
 
     this.props.firebase.room(this.state.roomId).on('value', snapshot => {
@@ -97,6 +97,8 @@ class Game extends React.Component {
   }
 
   componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.playerDisconnect);
+
     this.props.firebase.room().off();
   }
 
@@ -167,8 +169,8 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <h3 className="title">test</h3>
-          <div>{myName}</div>
-          <div>{opponentName}</div>
+          <div className={myTurn ? "currentTurnBorder" : ""}>{myName}</div>
+          <div className={!myTurn ? "currentTurnBorder" : ""}>{opponentName}</div>
 
           {!winner
             ?
@@ -189,7 +191,7 @@ class Game extends React.Component {
               {status}
             </div>
           }
-          {playerDisconnect
+          {playerDisconnect || winner
             ? <div>
               <button className="btn btn-info returnButton">
                 <Link to={Routes.Home}>Return</Link>
@@ -204,6 +206,7 @@ class Game extends React.Component {
           <Board
             squares={squares}
             lastClick={lastClick}
+            myTurn={myTurn}
             onClick={(i) => this.handleClick(i, myTurn)}
             winSeq={winner.sequence} />
         </div>
