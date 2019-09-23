@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/gomoku-multiplayer/static/css/main.9551ad0a.chunk.css",
+    "main.js": "/gomoku-multiplayer/static/js/main.c09020a2.chunk.js",
+    "main.js.map": "/gomoku-multiplayer/static/js/main.c09020a2.chunk.js.map",
+    "runtime~main.js": "/gomoku-multiplayer/static/js/runtime~main.f550bee3.js",
+    "runtime~main.js.map": "/gomoku-multiplayer/static/js/runtime~main.f550bee3.js.map",
+    "static/css/2.266e55a5.chunk.css": "/gomoku-multiplayer/static/css/2.266e55a5.chunk.css",
+    "static/js/2.356cc6ad.chunk.js": "/gomoku-multiplayer/static/js/2.356cc6ad.chunk.js",
+    "static/js/2.356cc6ad.chunk.js.map": "/gomoku-multiplayer/static/js/2.356cc6ad.chunk.js.map",
+    "index.html": "/gomoku-multiplayer/index.html",
+    "precache-manifest.6facaa8e9c61dadb16a0dc50d4649dbb.js": "/gomoku-multiplayer/precache-manifest.6facaa8e9c61dadb16a0dc50d4649dbb.js",
+    "service-worker.js": "/gomoku-multiplayer/service-worker.js",
+    "static/css/2.266e55a5.chunk.css.map": "/gomoku-multiplayer/static/css/2.266e55a5.chunk.css.map",
+    "static/css/main.9551ad0a.chunk.css.map": "/gomoku-multiplayer/static/css/main.9551ad0a.chunk.css.map"
+  }
+}
