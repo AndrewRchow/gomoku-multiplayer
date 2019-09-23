@@ -21,7 +21,6 @@ class App extends React.Component {
 
   render() {
     return (
-
       <HashRouter>
         <Switch>
           <Route exact path={Routes.Home} component={Home} />

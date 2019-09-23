@@ -10,56 +10,6 @@ import { Link } from 'react-router-dom';
 // import classes from './onlineGame.module.css';
 
 
-class Square extends React.Component {
-  render() {
-    let isWinningSquare = false;
-    let isLastClickedSquare = false;
-    if (this.props.winSeq) {
-      isWinningSquare = elementInArray(this.props.keyProp, this.props.winSeq);
-    }
-    if (this.props.lastClick == this.props.keyProp) {
-      isLastClickedSquare = true;
-    }
-
-    return (
-      <button
-        className={(this.props.myTurn ? 'square ' : 'disabledSquare ') + (isWinningSquare ? 'winningSquare ' : '') + (isLastClickedSquare ? 'lastClick' : '')}
-        onClick={() => this.props.onClick()}>
-        {this.props.value}
-      </button>
-    );
-  }
-}
-
-class Board extends React.Component {
-  renderSquare(i) {
-    return <Square
-      key={i} keyProp={i}
-      lastClick={this.props.lastClick}
-      myTurn={this.props.myTurn}
-      value={this.props.squares[i]}
-      onClick={() => this.props.onClick(i)}
-      winSeq={this.props.winSeq} />;
-  }
-
-  render() {
-    var boardSquares = [];
-    var boardSquaresRow = [];
-    for (var i = 0; i < 225; i++) {
-      if (i % 15 == 0 && i != 0) {
-        boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
-        boardSquaresRow = [];
-      }
-      boardSquaresRow.push(this.renderSquare(i));
-    }
-    return (
-      <div>
-        {boardSquares}
-      </div>
-    );
-  }
-}
-
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -168,7 +118,7 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <h3 className="title">test</h3>
+          <h3 className="title">Title</h3>
           <div className={myTurn ? "currentTurnBorder" : ""}>{myName}</div>
           <div className={!myTurn ? "currentTurnBorder" : ""}>{opponentName}</div>
 
@@ -187,7 +137,7 @@ class Game extends React.Component {
               </div>
             </div>
             :
-            <div className={(myTurn ? 'winner' : 'loser')}>
+            <div className={(!myTurn ? 'winner' : 'loser')}>
               {status}
             </div>
           }
@@ -200,9 +150,6 @@ class Game extends React.Component {
             : <div></div>
           }
 
-          <div style={{ height: '400px' }}>
-            sdf
-          </div>
           <Board
             squares={squares}
             lastClick={lastClick}
@@ -220,7 +167,63 @@ class Game extends React.Component {
 
 
 
+class Board extends React.Component {
+  renderSquare(i) {
+    return <Square
+      key={i} keyProp={i}
+      lastClick={this.props.lastClick}
+      myTurn={this.props.myTurn}
+      value={this.props.squares[i]}
+      onClick={() => this.props.onClick(i)}
+      winSeq={this.props.winSeq} />;
+  }
+
+  render() {
+    var boardSquares = [];
+    var boardSquaresRow = [];
+    for (var i = 0; i < 225; i++) {
+      if (i % 15 == 0 && i != 0) {
+        boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
+        boardSquaresRow = [];
+      }
+      boardSquaresRow.push(this.renderSquare(i));
+    }
+    return (
+      <div>
+        {boardSquares}
+      </div>
+    );
+  }
+}
+
+
+
+class Square extends React.Component {
+  render() {
+    let isWinningSquare = false;
+    let isLastClickedSquare = false;
+    if (this.props.winSeq) {
+      isWinningSquare = elementInArray(this.props.keyProp, this.props.winSeq);
+    }
+    if (this.props.lastClick == this.props.keyProp) {
+      isLastClickedSquare = true;
+    }
+
+    return (
+      <button
+        className={(this.props.myTurn ? 'square ' : 'disabledSquare ') + (isWinningSquare ? 'winningSquare ' : '') + (isLastClickedSquare ? 'lastClick' : '')}
+        onClick={() => this.props.onClick()}>
+        {this.props.value}
+      </button>
+    );
+  }
+}
+
+
+
 export default withFirebase(Game)
+
+
 
 // ========================================
 

@@ -3,53 +3,7 @@ import ReactDOM from 'react-dom';
 import './offlineGame.css';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
-class Square extends React.Component {
-  render() {
-    let isWinningSquare = false;
-    if (this.props.winSeq) {
-      isWinningSquare = elementInArray(this.props.keyProp, this.props.winSeq);
-    }
 
-    return (
-      <button
-        className={'square ' + (isWinningSquare ? 'winningSquare' : '')}
-        onClick={() => this.props.onClick()}>
-        {this.props.value}
-      </button>
-    );
-  }
-}
-
-class Board extends React.Component {
-  renderSquare(i) {
-    return <Square
-      key={i} keyProp={i}
-      value={this.props.squares[i]}
-      onClick={() => this.props.onClick(i)}
-      winSeq={this.props.winSeq} />;
-  }
-
-  render() {
-    var boardSquares = [];
-    var boardSquaresRow = [];
-    for (var i = 0; i < 225; i++) {
-      if (i % 15 == 0 && i != 0) {
-        boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
-        boardSquaresRow = [];
-      }
-      boardSquaresRow.push(this.renderSquare(i));
-
-      // if(i == 224){
-      //   boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
-      // }
-    }
-    return (
-      <div>
-        {boardSquares}
-      </div>
-    );
-  }
-}
 
 class Game extends React.Component {
   constructor(props) {
@@ -119,11 +73,11 @@ class Game extends React.Component {
         )
       }
 
-      // return (
-      //   <li key={move}>
-      //   <button onClick={() => this.jumpTo(move)}>{desc}</button>
-      // </li>
-      // )
+      return (
+        <li key={move}>
+        <button onClick={() => this.jumpTo(move)}>{desc}</button>
+      </li>
+      )
 
     })
 
@@ -141,11 +95,11 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <h3 className="title">Title</h3>
-          {/* <Board
+          <h3 className="title">Single</h3>
+          <Board
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
-            winSeq={winner.sequence} /> */}
+            winSeq={winner.sequence} />
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -157,8 +111,60 @@ class Game extends React.Component {
 }
 
 
+class Board extends React.Component {
+  renderSquare(i) {
+    return <Square
+      key={i} keyProp={i}
+      value={this.props.squares[i]}
+      onClick={() => this.props.onClick(i)}
+      winSeq={this.props.winSeq} />;
+  }
+
+  render() {
+    var boardSquares = [];
+    var boardSquaresRow = [];
+    for (var i = 0; i < 225; i++) {
+      if (i % 15 == 0 && i != 0) {
+        boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
+        boardSquaresRow = [];
+      }
+      boardSquaresRow.push(this.renderSquare(i));
+
+      // if(i == 224){
+      //   boardSquares.push(<div className="board-row" key={i}>{boardSquaresRow}</div>);
+      // }
+    }
+    return (
+      <div>
+        {boardSquares}
+      </div>
+    );
+  }
+}
+
+
+
+class Square extends React.Component {
+  render() {
+    let isWinningSquare = false;
+    if (this.props.winSeq) {
+      isWinningSquare = elementInArray(this.props.keyProp, this.props.winSeq);
+    }
+
+    return (
+      <button
+        className={'square ' + (isWinningSquare ? 'winningSquare' : '')}
+        onClick={() => this.props.onClick()}>
+        {this.props.value}
+      </button>
+    );
+  }
+}
+
+
 
 export default Game
+
 
 // ========================================
 

@@ -1,10 +1,11 @@
 import React from 'react';
+import './home.css';
 import { BrowserRouter as Router, Route, HashRouter } from 'react-router-dom';
 import { withFirebase } from '../Firebase';
 import { ClipLoader } from 'react-spinners';
 import { css } from '@emotion/core';
 
-import Game from '../Game/offlineGame'
+import OfflineGame from '../Game/offlineGame'
 import * as Routes from '../../constants/routes';
 
 const newGame = {
@@ -34,10 +35,7 @@ class Home extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log('blrh', this.state.roomInfo);
-
         if (this.state.roomInfo.playerO) {
-            console.log('blrh', this.state.roomInfo);
             this.props.history.push({
                 pathname: Routes.Multiplayer,
                 state: {
@@ -71,7 +69,7 @@ class Home extends React.Component {
                                     playerX: true,
                                     playerO: false,
                                     playerXName: this.state.name,
-                                    playerOName:'',
+                                    playerOName: '',
                                     completed: false,
                                     playerDisconnect: false
                                 })
@@ -161,43 +159,49 @@ class Home extends React.Component {
     }
 
     handleChange = (event) => {
-        console.log('blesh',event);
         this.setState({ [event.target.name]: event.target.value });
     };
 
 
     render() {
         const { loading, name, roomInfo, roomId } = this.state;
-        console.log('tsfest', roomInfo);
 
         const override = css`
-            display: block;
-            margin: 30px`;
+            marginRight: 30px`;
 
         return (
             <div>
-                <div>
+                <div className="well">
+                    <h5>Online Search</h5>
                     <label>
-                        Name:
+                        User name:
                       <input type="text" value={name} name="name" onChange={this.handleChange} />
                     </label>
-                    <button className={'form-control'} onClick={this.searchButton} disabled={loading || !name}>Search</button>
+                    <div style={{display:'block'}}>
+                        <button
+                            className={'btn btn-info'} style={{ display: 'inline' }}
+                            onClick={this.searchButton} disabled={loading || !name}>Search for room</button>
+                        <div className='sweet-loading' style={{ display: 'inline' }}>
+                            <ClipLoader
+                                sizeUnit={"px"}
+                                css={override}
+                                size={30}
+                                color={'#61aceb'}
+                                loading={loading}
+                            />
+                        </div>
+                    </div>
+
+
                     {loading
-                        ? <button onClick={this.cancelSearchButton}>Cancel</button>
+                        ? <button style={{marginTop:"10px"}} onClick={this.cancelSearchButton}>Cancel</button>
                         : <div></div>
                     }
 
-                    <div className='sweet-loading'>
-                        <ClipLoader
-                            sizeUnit={"px"}
-                            css={override}
-                            size={30}
-                            color={'#61aceb'}
-                            loading={loading}
-                        />
-                    </div>
+
                 </div>
-                <Game />
+
+                {/* <OfflineGame /> */}
 
             </div>
 
