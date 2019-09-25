@@ -14,6 +14,16 @@ const newGame = {
     lastClick: 226
 };
 
+const newRoom = {
+    gameState: newGame,
+    playerX: true,
+    playerO: false,
+    playerXName: '',
+    playerOName: '',
+    completed: false,
+    playerDisconnect: false
+}
+
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -63,15 +73,15 @@ class Home extends React.Component {
                         let isOpen = snapshot.val().isOpen;
                         let roomId = snapshot.val().roomId;
                         if (!isOpen) {
+                            let data = newRoom;
+                            console.log('aaa', data);
+                            data.playerXName = this.state.name;
+                            console.log('aaa', data.playerXName);
+
+
                             this.props.firebase.rooms()
                                 .push({
-                                    gameState: newGame,
-                                    playerX: true,
-                                    playerO: false,
-                                    playerXName: this.state.name,
-                                    playerOName: '',
-                                    completed: false,
-                                    playerDisconnect: false
+                                   data
                                 })
                                 .then((snap) => {
                                     const newRoomId = snap.key;
