@@ -66,6 +66,7 @@ class Home extends React.Component {
                             this.props.firebase.rooms()
                                 .push({
                                     gameState: newGame,
+                                    chat: '',
                                     playerX: true,
                                     playerO: false,
                                     playerXName: '',

@@ -29,6 +29,7 @@ class Firebase {
 
   room = id => this.db.ref(`gomoku/rooms/${id}`);
   gameState = id => this.db.ref(`gomoku/rooms/${id}/gameState`);
+  chat = id => this.db.ref(`gomoku/rooms/${id}/chat`);
 
 
 
