@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import OnlineGame from '../Game/onlineGame';
+import Chatroom from '../Chatroom';
 
 class Multiplayer extends Component {
     constructor(props) {
@@ -18,7 +19,10 @@ class Multiplayer extends Component {
             <div>
                 <h5>Multi</h5>
                 {roomId
-                    ? <OnlineGame roomId={roomId} player={player}/>
+                    ? <div>
+                        <Chatroom roomId={roomId} player={player} />
+                        <OnlineGame roomId={roomId} player={player} />
+                    </div>
                     : <div></div>
                 }
 
