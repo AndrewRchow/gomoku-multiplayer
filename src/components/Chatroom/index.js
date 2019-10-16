@@ -9,7 +9,8 @@ class Chatroom extends React.Component {
         this.state = {
             roomId: this.props.roomId,
             player: this.props.player,
-            message: ''
+            message: '',
+            messages: []
         }
     }
 
@@ -20,8 +21,10 @@ class Chatroom extends React.Component {
             Object.keys(snapshot.val()).forEach((key) => {
                 messages.push(snapshot.val()[key]);
             });
+            this.setState({
+                messages
+            })
             console.log(messages);
-
         })
     }
 
@@ -36,15 +39,39 @@ class Chatroom extends React.Component {
                 player: this.state.player
             });
         this.setState({
-            message:''
+            message: ''
         })
     }
 
     render() {
-        const { message } = this.state;
+        const { player, message, messages } = this.state;
+        const messagesBox = [];
+
+        for (const [index, value] of messages.entries()) {
+            if (value.player == player) {
+                messagesBox.push(
+                    <li key={index} className={classes.rightMessage}>
+                        {value.message}
+                    </li>
+                )
+            } else {
+                messagesBox.push(
+                    <li key={index}>
+                        {value.message}
+                    </li>
+                )
+            }
+        }
+
 
         return (
             <div>
+                <section className={`${classes.chatBox} ${classes.clearfix}`}>
+                    <ul className={`${classes.messages} ${classes.clearfix}`}>
+                        {messagesBox}
+                    </ul>
+                </section>
+
                 <input type="text" value={message} name="message" onChange={this.handleChange} />
                 <button className={'btn btn-info'} onClick={this.sendMessage} disabled={!message}>Send</button>
             </div>
