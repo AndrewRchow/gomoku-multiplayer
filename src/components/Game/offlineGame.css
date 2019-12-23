@@ -24,8 +24,8 @@ body {
   }
   
   .square {
-    background: #fff;
-    border: 1px solid #999;
+    background: #eab26c;
+    border: 1px solid black;
     float: left;
     font-size: 24px;
     font-weight: bold;
@@ -49,11 +49,11 @@ body {
   .game {
     display: flex;
     flex-direction: row;
-    margin: 5% auto 0 auto;
+    /* margin: 5% auto 0 auto; */
   }
   
   .game-board {
-    margin-left: 20%;
+    /* margin-left: 20%; */
   }
   
   .game-info {

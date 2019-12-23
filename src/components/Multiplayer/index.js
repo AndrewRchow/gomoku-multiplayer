@@ -3,6 +3,10 @@ import OnlineGame from '../Game/onlineGame';
 import Chatroom from '../Chatroom';
 import { withFirebase } from '../Firebase';
 import * as Routes from '../../constants/routes';
+import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import './multiplayer.css';
+
+
 
 
 const newGame = {
@@ -22,61 +26,61 @@ class Multiplayer extends Component {
     }
 
     componentWillMount() {
-        if(Routes.DEVELOP && this.props.location.state == null){
+        if (Routes.DEVELOP && this.props.location.state == null) {
             this.testRoom();
         }
     }
 
     testRoom = () => {
-       
-            this.props.firebase
-                .openRoom()
-                .once('value').then((snapshot) => {
-                    if (snapshot.val()) {
-                        let isOpen = snapshot.val().isOpen;
-                        let roomId = snapshot.val().roomId;
-                        if (!isOpen) {
-                            this.props.firebase.rooms()
-                                .push({
-                                    gameState: newGame,
-                                    chat: '',
-                                    playerX: true,
-                                    playerO: true,
-                                    playerXName: 'test1',
-                                    playerOName: 'test2',
-                                    completed: false,
-                                    playerDisconnect: false
-                                })
-                                .then((snap) => {
-                                    const newRoomId = snap.key;
-                                    this.props.firebase.openRoom()
-                                        .update({
-                                            roomId: newRoomId,
-                                            isOpen: false
-                                        }).then(() => {
-                                            this.setState({
-                                                roomId: newRoomId,
-                                                player: 'playerX'
-                                            });
-                                        });
-                                })
-                        } 
 
-                        // this.props.firebase.room(roomId).on('value', snapshot => {
-                        //   console.log(snapshot.val());
-                        //   if (napshot.val()) {
-                        //     const roomInfo = Object.keys(snapshot.val()).map(key => ({
-                        //       bobaShop: key,
-                        //       userid,
-                        //       ...myReviewsObject[key],
-                        //     }))
-                        //     this.sortReviews(myReviewsList)
-                        //   } else {
-                        //     this.setState({ reviews: [], loading: false });
-                        //   }
-                        // });
+        this.props.firebase
+            .openRoom()
+            .once('value').then((snapshot) => {
+                if (snapshot.val()) {
+                    let isOpen = snapshot.val().isOpen;
+                    let roomId = snapshot.val().roomId;
+                    if (!isOpen) {
+                        this.props.firebase.rooms()
+                            .push({
+                                gameState: newGame,
+                                chat: '',
+                                playerX: true,
+                                playerO: true,
+                                playerXName: 'test1',
+                                playerOName: 'test2',
+                                completed: false,
+                                playerDisconnect: false
+                            })
+                            .then((snap) => {
+                                const newRoomId = snap.key;
+                                this.props.firebase.openRoom()
+                                    .update({
+                                        roomId: newRoomId,
+                                        isOpen: false
+                                    }).then(() => {
+                                        this.setState({
+                                            roomId: newRoomId,
+                                            player: 'playerX'
+                                        });
+                                    });
+                            })
                     }
-                })
+
+                    // this.props.firebase.room(roomId).on('value', snapshot => {
+                    //   console.log(snapshot.val());
+                    //   if (napshot.val()) {
+                    //     const roomInfo = Object.keys(snapshot.val()).map(key => ({
+                    //       bobaShop: key,
+                    //       userid,
+                    //       ...myReviewsObject[key],
+                    //     }))
+                    //     this.sortReviews(myReviewsList)
+                    //   } else {
+                    //     this.setState({ reviews: [], loading: false });
+                    //   }
+                    // });
+                }
+            })
 
     }
 
@@ -86,11 +90,16 @@ class Multiplayer extends Component {
 
         return (
             <div>
-                <h5>Multi</h5>
                 {roomId
-                    ? <div>
-                        <Chatroom roomId={roomId} player={player} />
-                        <OnlineGame roomId={roomId} player={player} />
+                    ? <div className="container">
+                        <div className="row">
+                            <div className="col-md-9">
+                                <OnlineGame roomId={roomId} player={player} />
+                            </div>
+                            <div className="col-md-3">
+                                <Chatroom roomId={roomId} player={player} />
+                            </div>
+                        </div>
                     </div>
                     : <div></div>
                 }

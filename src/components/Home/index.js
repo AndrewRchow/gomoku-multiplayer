@@ -7,6 +7,7 @@ import { css } from '@emotion/core';
 
 import OfflineGame from '../Game/offlineGame'
 import * as Routes from '../../constants/routes';
+import table from '../../media/images/gomoku-table.png';
 
 const newGame = {
     squares: Array(225).fill(''),
@@ -69,7 +70,7 @@ class Home extends React.Component {
                                     chat: '',
                                     playerX: true,
                                     playerO: false,
-                                    playerXName: '',
+                                    playerXName: this.state.name,
                                     playerOName: '',
                                     completed: false,
                                     playerDisconnect: false
@@ -172,17 +173,29 @@ class Home extends React.Component {
 
         return (
             <div>
-                <div className="well">
-                    <h5>Online Search</h5>
+                <div className="titleBlock">
+                    <h1>Online Gomoku</h1>
+
+                    <div>
+                        <img src={table} />
+                    </div>
+
+                </div>
+
+                <div className="well searchBox">
                     <label>
                         User name:
-                      <input type="text" value={name} name="name" onChange={this.handleChange} />
+                      <input type="text" value={name} name="name" onChange={this.handleChange} style={{marginLeft:'6px'}}/>
                     </label>
-                    <div style={{display:'block'}}>
-                        <button
-                            className={'btn btn-info'} style={{ display: 'inline' }}
-                            onClick={this.searchButton} disabled={loading || !name}>Search for room</button>
-                        <div className='sweet-loading' style={{ display: 'inline' }}>
+                    <div className="searchButton">
+                    {loading
+                        ? <button style={{ display: "inline" }} onClick={this.cancelSearchButton}>Cancel</button>
+                        : <button
+                        className={'btn btn-info'} style={{ display: 'inline' }}
+                        onClick={this.searchButton} disabled={loading || !name}>Search for room</button>
+                    }
+                        
+                        <div className='sweet-loading' style={{ display: 'block', marginTop:"20px" }}>
                             <ClipLoader
                                 sizeUnit={"px"}
                                 css={override}
@@ -194,13 +207,12 @@ class Home extends React.Component {
                     </div>
 
 
-                    {loading
-                        ? <button style={{marginTop:"10px"}} onClick={this.cancelSearchButton}>Cancel</button>
-                        : <div></div>
-                    }
+                  
 
 
                 </div>
+
+
 
                 {/* <OfflineGame /> */}
 

@@ -83,7 +83,11 @@ class Game extends React.Component {
   }
 
   render() {
-    const { squares, xIsNext, lastClick, player, playerDisconnect, myName, opponentName } = this.state;
+    const { squares, xIsNext, lastClick, player, playerDisconnect } = this.state;
+
+    const myName = this.state.myName.charAt(0).toUpperCase() + this.state.myName.substring(1);
+    const opponentName = this.state.opponentName.charAt(0).toUpperCase() + this.state.opponentName.substring(1);
+
     const winner = calculateWinner(squares);
 
     const override = css`
@@ -117,49 +121,91 @@ class Game extends React.Component {
 
     return (
       <div className="game">
-        <div className="game-board">
-          <h3 className="title">Title</h3>
-          <div className={myTurn ? "currentTurnBorder" : ""}>{myName}</div>
-          <div className={!myTurn ? "currentTurnBorder" : ""}>{opponentName}</div>
+        <div className="game-board row">
 
-          {!winner
-            ?
-            <div className={(myTurn ? 'myTurn' : 'opponentTurn')}>
-              {status}
-              <div className='sweet-loading'>
-                <ClipLoader
-                  sizeUnit={"px"}
-                  css={override}
-                  size={30}
-                  color={'#61aceb'}
-                  loading={!myTurn}
-                />
+
+          {/* <button className="btn btn-info returnButton">
+            <Link to={Routes.Home}>Leave Room</Link>
+          </button> */}
+
+          <div className="boardSide boardSideLeft">
+            <h2>
+              {myName} - {player == 'playerX' ? 'X' : 'O'}
+            </h2>
+            {!winner
+              ? <div>
+                {myTurn
+                  ? <div className="currentTurnBorder">
+                    <h4>
+                      Your Turn
+              </h4>
+                  </div>
+                  : <div></div>
+                }
               </div>
-            </div>
-            :
-            <div className={(!myTurn ? 'winner' : 'loser')}>
-              {status}
-            </div>
-          }
-          {playerDisconnect || winner
-            ? <div>
-              <button className="btn btn-info returnButton">
-                <Link to={Routes.Home}>Return</Link>
-              </button>
-            </div>
-            : <div></div>
-          }
+              : <div>
+                {myTurn
+                  ? <div className="status myWin">
+                    {status}
+                  </div>
+                  : <div className="status opponentWin">
+                    {status}
+                  </div>
+                }
+              </div>
+            }
+          </div>
 
-          <Board
-            squares={squares}
-            lastClick={lastClick}
-            myTurn={myTurn}
-            onClick={(i) => this.handleClick(i, myTurn)}
-            winSeq={winner.sequence} />
+          <div className="">
+            <Board
+              squares={squares}
+              lastClick={lastClick}
+              myTurn={myTurn}
+              onClick={(i) => this.handleClick(i, myTurn)}
+              winSeq={winner.sequence}
+
+            />
+          </div>
+
+          <div className="boardSide boardSideRight">
+            <h2>
+              {opponentName} - {player == 'playerX' ? 'O' : 'X'}
+            </h2>
+
+            {!winner
+              ? <div>
+                {!myTurn
+                  ? <div>
+                    {playerDisconnect
+                      ? <div className="opponentDisconnected">
+                        Opponent Disconnected
+                        </div>
+                      : <div className="currentTurnBorder">
+                        <h4>
+                          Opponent's Turn
+                        </h4>
+                        <div className={(myTurn ? 'myTurn' : 'opponentTurn')}>
+                          <div className='sweet-loading'>
+                            <ClipLoader
+                              sizeUnit={"px"}
+                              css={override}
+                              size={30}
+                              color={'#61aceb'}
+                              loading={!myTurn}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                  : <div></div>
+                }
+              </div>
+              : <div></div>
+            }
+          </div>
+
         </div>
-        {/* <div className="game-info">
-          <div>{status}</div>
-        </div> */}
       </div >
     );
   }
@@ -189,7 +235,7 @@ class Board extends React.Component {
       boardSquaresRow.push(this.renderSquare(i));
     }
     return (
-      <div>
+      <div class="gameBoard">
         {boardSquares}
       </div>
     );

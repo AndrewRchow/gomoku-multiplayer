@@ -1,4 +1,10 @@
 
+.chatRoom {
+	display:inline-grid !important;
+	margin-left:20px;
+}
+
+
 li{
     display: block;
     clear: both;
@@ -17,7 +23,7 @@ li{
           height: 1%;  
         } 
         .clearfix {  
-          display: block;  
+          display: inline;  
         }
 		section.chatBox {
 			background: #fff;
@@ -90,6 +96,10 @@ li{
 		ul.messages .rightMessage:before {
 			border-left-color: transparent;
 		} 
+
+
+		
+
 
 
 /* .message {

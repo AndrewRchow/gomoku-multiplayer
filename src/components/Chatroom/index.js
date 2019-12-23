@@ -65,15 +65,17 @@ class Chatroom extends React.Component {
 
 
         return (
-            <div>
+            <div className={`${classes.chatRoom}`}>
                 <section className={`${classes.chatBox} ${classes.clearfix}`}>
                     <ul className={`${classes.messages} ${classes.clearfix}`}>
                         {messagesBox}
                     </ul>
                 </section>
+                <div>
+                    <input type="text" value={message} name="message" onChange={this.handleChange} />
+                    <button className={'btn btn-info'} onClick={this.sendMessage} disabled={!message}>Send</button>
 
-                <input type="text" value={message} name="message" onChange={this.handleChange} />
-                <button className={'btn btn-info'} onClick={this.sendMessage} disabled={!message}>Send</button>
+                </div>
             </div>
         );
     }

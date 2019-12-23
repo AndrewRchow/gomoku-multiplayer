@@ -27,3 +27,7 @@ section.route-section {
  top: 0;
  left: 0;
 }
+
+body{
+    background-color:#e5e5e5 !important;
+  }
